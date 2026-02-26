@@ -21,6 +21,7 @@ return [
                     'clientSecret' => getenv('GOOGLE_CLIENT_SECRET'),
                 ],
             ],
+
         ],
         'cache' => [
             'class' => \yii\caching\FileCache::class,
