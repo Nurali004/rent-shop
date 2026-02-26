@@ -2,12 +2,14 @@
 
 namespace frontend\controllers;
 
+use backend\models\EquipmentSearch;
 use common\models\Category;
 use common\models\Customer;
 use common\models\Equipment;
 use common\models\EquipmentItem;
 use frontend\models\OrderSearch;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -45,15 +47,20 @@ class EquipmentController extends Controller
     public function actionIndex()
     {
 
-        $searchModel = new OrderSearch();
+        $model = new EquipmentSearch();
+
+        $searchModel = new EquipmentSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
         $dataProvider->pagination->pageSize = 9;
 
+        $categories = Category::find()->where(['not', ['pid' => null]])->orderBy(['id' => SORT_DESC])->limit(2)->all();
 
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'categories' => $categories,
+            'model' => $model,
 
         ]);
     }
@@ -190,6 +197,39 @@ class EquipmentController extends Controller
         ]);
     }
 
+
+    public function actionCategoryIndex($id)
+    {
+        $category = Category::findOne($id);
+
+        $category_item = Category::find()->where(['pid' => $category->id])->all();
+        $featured_categories = Category::find()->where(['!=', 'pid', $category->id])->limit(2)->orderBy(['id' => SORT_ASC])->all();
+
+        $equipments = Equipment::find()->where(['category_id' => ArrayHelper::getColumn($category_item, 'id')])->all();
+        $searchModel = new EquipmentSearch();
+
+        $category_counts = Category::find()->select([
+            'category.*',
+            'count(child.id) as children_count',
+        ])->alias('category')->leftJoin('category As child', 'child.pid = category.id')
+            ->where(['category.pid' => null])
+            ->groupBy('category.id')->asArray()->all();
+
+
+
+
+        return $this->render('category-index', [
+            'category' => $category,
+            'equipments' => $equipments,
+            'category_counts' => $category_counts,
+            'featured_categories' => $featured_categories,
+            'searchModel' => $searchModel,
+
+        ]);
+
+
+    }
+
     /**
      * Deletes an existing Equipment model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -203,6 +243,8 @@ class EquipmentController extends Controller
 
         return $this->redirect(['index']);
     }
+
+
 
     /**
      * Finds the Equipment model based on its primary key value.

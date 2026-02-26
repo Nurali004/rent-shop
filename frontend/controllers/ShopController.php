@@ -19,7 +19,7 @@ class ShopController extends Controller
     {
         $model = Equipment::findOne($id);
         $category = Category::findOne($model->category_id);
-        $categories = Category::find()->where(['pid' => $category->pid])->andWhere(['!=', 'id', $model->category_id])->all();
+        $categories = Category::find()->with('equipments')->orderBy(['id' => SORT_ASC])->where(['pid' => $category->pid])->andWhere(['!=', 'id', $model->category_id])->all();
 
         $category_counts = Category::find()->select([
             'category.*',
@@ -63,6 +63,17 @@ class ShopController extends Controller
         $favorite->save();
 
         return $this->redirect(['equipment/index']);
+
+    }
+
+    public function actionCategory()
+    {
+        $categories = Category::find()->all();
+        return $this->render('category', [
+            'categories' => $categories,
+        ]);
+
+
 
     }
 

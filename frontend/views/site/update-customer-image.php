@@ -14,12 +14,23 @@ use yii\bootstrap5\Html;
 ]) ?>
 
 <div class="profile-image text-center">
+    <?php if (!empty($customer->img)): ?>
+
     <img id="customer-photo"
-         src="/<?= $customer->img ?: 'images/default-avatar.png' ?>"
+         src="/<?= $customer->img ?>"
          width="200"
          height="200"
          alt="Customer Photo"
          class="img-thumbnail rounded-circle">
+    <?php else: ?>
+    <img id="customer-photo"
+         src="/frontend/web/uploads/customer/img_1.png"
+         width="200"
+         height="200"
+         alt="Customer Photo"
+         class="img-thumbnail rounded-circle">
+    <?php endif; ?>
+
 
     <?= $image_form->field($customer, 'imageFile')->fileInput([
         'id' => 'photo-input',
@@ -27,7 +38,7 @@ use yii\bootstrap5\Html;
         'accept' => 'image/*',
     ])->label(false) ?>
 
-    <div class="mb-4">
+    <div class="mb-2">
         <button type="button" id="change-photo" class="btn btn-sm btn-primary">
             <i class="bi bi-camera"></i> Change Photo
         </button>

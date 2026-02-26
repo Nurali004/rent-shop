@@ -47,22 +47,21 @@ $this->title = 'My Yii Application';
                 <div class="col-12 col-lg-5 col-xl-3 wow fadeInRight" data-wow-delay="0.1s"
                      style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInRight;">
                     <div class="carousel-header-banner h-100">
-                        <img src="<?= $special_offer->equipment->img ?>" width="300" class="img-fluid w-100 h-100"
+                        <img src="/<?= $special_offer->equipment->img ?>" width="300" class="img-fluid w-100 h-100"
                              style="object-fit: contain;" alt="Image">
                         <div class="carousel-banner-offer">
-                            <p class="bg-primary text-white rounded fs-5 py-2 px-4 mb-0 me-3">Save $48.00</p>
-                            <p class="text-primary fs-5 fw-bold mb-0">Special Offer</p>
+
+                            <p class="text-primary fs-5 fw-bold mb-0">Special Offers</p>
                         </div>
                         <div class="carousel-banner">
                             <div class="carousel-banner-content text-center p-4">
-                                <a href="#" class="d-block mb-2"><?= $special_offer->equipment->category->name ?></a>
-                                <a href="#" class="d-block text-white fs-3"><?= $special_offer->equipment->name ?> <br>
+                                <a href="<?= \yii\helpers\Url::to(['category/index']) ?>" class="d-block mb-2"><?= $special_offer->equipment->category->name ?></a>
+                                <a href="<?= \yii\helpers\Url::to(['shop/detail', 'id' => $special_offer->equipment_id]) ?>" class="d-block text-white fs-3"><?= $special_offer->equipment->name ?> <br>
                                     G2356</a>
                                 <del class="me-2 text-white fs-5"><?= $special_offer->old_price ?></del>
                                 <span class="text-primary fs-5"><?= $special_offer->new_price ?></span>
                             </div>
-                            <a href="#" class="btn btn-primary rounded-pill py-2 px-4"><i
-                                        class="fas fa-shopping-cart me-2"></i> Add To Cart</a>
+
                         </div>
                     </div>
                 </div>

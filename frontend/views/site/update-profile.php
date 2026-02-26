@@ -10,70 +10,75 @@
 <?php endif; ?>
 
 
-            <?php use yii\bootstrap5\ActiveForm;
-            use yii\bootstrap5\Html;
+<?php use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\Html;
 
-            $customer_form = ActiveForm::begin([
-                    'id' => 'customer-form',
-                'action' => ['update-profile'],
-                    'options' => ['data' => ['pjax' => true]],
-            ]); ?>
+$customer_form = ActiveForm::begin([
+        'id' => 'customer-form',
+        'action' => ['update-profile'],
+        'options' => ['data' => ['pjax' => true]],
+]); ?>
 
-            <div class="row">
-                <div class="col-lg-6">
-                    <?= $customer_form->field($customer, 'first_name')->textInput(['maxlength' => true]) ?>
+<div class="row">
+    <div class="col-lg-6">
+        <?= $customer_form->field($customer, 'first_name')->textInput(['maxlength' => true]) ?>
 
-                </div>
-                <div class="col-lg-6">
-                    <?= $customer_form->field($customer, 'last_name')->textInput(['maxlength' => true]) ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <?= $customer_form->field($customer, 'user_id')->textInput() ?>
+    </div>
+    <div class="col-lg-6">
+        <?= $customer_form->field($customer, 'last_name')->textInput(['maxlength' => true]) ?>
+    </div>
+</div>
+<div class="row">
 
-                </div>
-                <div class="col-lg-6">
-                    <?= $customer_form->field($customer, 'passport')->textInput([
+    <div class="col-lg-6">
+        <?= $customer_form->field($customer, 'passport')->textInput([
 
-                        'maxlength' => 9, 'minlength' => 8, 'placeholder' => 'AD4162345',
-                        'style' => 'text-transform:uppercase;',
-                        'oninput' =>
-                            'let val = this.value.toUpperCase();
+                'maxlength' => 9, 'minlength' => 8, 'placeholder' => 'AD4162345',
+                'style' => 'text-transform:uppercase;',
+                'oninput' =>
+                        'let val = this.value.toUpperCase();
                                 let letters = val.slice(0,2).replace(/[^A-Z]/g, "");
                                 let numbers = val.slice(2).replace(/[^0-9]/g, "");
                                 this.value = letters + numbers;
                                 
                                 '
 
-                    ]) ?>
+        ]) ?>
 
-                </div>
-            </div>
+    </div>
+    <div class="col-lg-6">
 
-            <div class="row">
-                <div class="col-lg-6">
-                    <?= $customer_form->field($customer, 'imageFile')->fileInput(['accept' => 'image/*', 'class' => 'form-control']) ?>
+        <?= $customer_form->field($customer, 'phone')->textInput(['maxlength' => true]) ?>
 
-                </div>
-                <div class="col-lg-6">
-                    <?= $customer_form->field($customer, 'phone')->textInput(['maxlength' => true]) ?>
+    </div>
+</div>
 
-                </div>
-            </div>
+<div class="row">
+    <div class="col-lg-6">
+        <?= $customer_form->field($customer, 'address')->textarea(['rows' => 2]) ?>
 
-            <div class="row">
-                <div class="col-lg-6">
-                    <?= $customer_form->field($customer, 'address')->textarea(['rows' => 2]) ?>
+    </div>
+    <div class="col-lg-6">
 
-                </div>
-                <div class="col-lg-6">
-                    <div class="form-group" style="margin-top: 45px">
-                        <?= Html::submitButton('Change', ['class' => 'btn btn-success']) ?>
-                    </div>
-                </div>
-            </div>
+        <div class="d-flex justify-content-end" style="margin-top: 50px; margin-right: 100px">
 
-            <?php ActiveForm::end(); ?>
+    <?= Html::submitButton('Change', ['class' => 'btn btn-success']) ?>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="row">
+
+    <div class="col-lg-6">
+        <div class="form-group" style="margin-top: 45px">
+
+        </div>
+    </div>
+</div>
+
+<?php ActiveForm::end(); ?>
 
 

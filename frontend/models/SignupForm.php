@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use common\models\EmailVerification;
 use Yii;
 use yii\base\Model;
 use common\models\User;
@@ -54,9 +55,31 @@ class SignupForm extends Model
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->generateAuthKey();
-        $user->generateEmailVerificationToken();
+        $user->status = User::STATUS_ACTIVE;
 
-        return $user->save() && $this->sendEmail($user);
+        if ($user->save()) {
+
+            $code = random_int(100000, 999999);
+            $verification = new EmailVerification();
+            $verification->user_id = $user->id;
+            $verification->email_code = $code;
+            $verification->email_expired_at = time() + 300;
+            $verification->email_verified = 0;
+            $verification->save(false);
+
+
+            Yii::$app->mailer->compose()
+                ->setFrom([Yii::$app->params['supportEmail'] => 'Admin'])
+                ->setTo($user->email)
+                ->setSubject('Email verification code')
+                ->setTextBody('Your verification code is:'.$code)
+                ->send();
+
+            return $user;
+        }
+        return null;
+
+
     }
 
     /**

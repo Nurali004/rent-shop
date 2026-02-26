@@ -14,6 +14,10 @@ use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 
 
+
+$searchModel = new \frontend\models\EquipmentSearch();
+
+
 $category_counts = Category::find()
         ->select([
                 'category.*',
@@ -25,6 +29,8 @@ $category_counts = Category::find()
         ->groupBy('category.id')
         ->asArray()
         ->all();
+
+$siteSetting = Setting::find()->one();
 
 RentalAsset::register($this);
 ?>
@@ -59,9 +65,9 @@ RentalAsset::register($this);
     <div class="row gx-0 align-items-center">
         <div class="col-lg-4 text-center text-lg-start mb-lg-0">
             <div class="d-inline-flex align-items-center" style="height: 45px;">
-                <a href="#" class="text-muted me-2"> Help</a><small> / </small>
+                <a href="<?= \yii\helpers\Url::to(['site/help']) ?>" class="text-muted me-2"> Help</a><small> / </small>
                 <a href="#" class="text-muted mx-2"> Support</a><small> / </small>
-                <a href="#" class="text-muted ms-2"> Contact</a>
+                <a href="<?= \yii\helpers\Url::to(['site/contact']) ?>" class="text-muted ms-2"> Contact</a>
 
             </div>
         </div>
@@ -74,14 +80,7 @@ RentalAsset::register($this);
 
         <div class="col-lg-4 text-center text-lg-end">
             <div class="d-inline-flex align-items-center" style="height: 45px;">
-                <div class="dropdown">
-                    <a href="#" class="dropdown-toggle text-muted me-2" data-bs-toggle="dropdown"><small>
-                            USD</small></a>
-                    <div class="dropdown-menu rounded">
-                        <a href="#" class="dropdown-item"> Euro</a>
-                        <a href="#" class="dropdown-item"> Dolar</a>
-                    </div>
-                </div>
+
                 <div class="dropdown">
                     <a href="#" class="dropdown-toggle text-muted mx-2" data-bs-toggle="dropdown"><small>
                             English</small></a>
@@ -93,13 +92,12 @@ RentalAsset::register($this);
                     </div>
                 </div>
                 <div class="dropdown">
-                    <a href="#" class="dropdown-toggle text-muted ms-2" data-bs-toggle="dropdown"><small><i
+                    <a href="/" class="dropdown-toggle text-muted ms-2" data-bs-toggle="dropdown"><small><i
                                     class="fa fa-home me-2"></i> My Account</small></a>
                     <div class="dropdown-menu rounded">
                         <a href="<?= \yii\helpers\Url::to(['site/login']) ?>" class="dropdown-item"> Login</a>
-                        <a href="<?= \yii\helpers\Url::to(['shop/show-cart']) ?>" class="dropdown-item"> My Card</a>
                         <a href="#" class="dropdown-item"> Account Settings</a>
-                        <a href="<?= \yii\helpers\Url::to(['site/profile']) ?>" class="dropdown-item"> My Account</a>
+                        <a href="<?= \yii\helpers\Url::to(['site/profile']) ?>" class="dropdown-item">Profile</a>
                         <?php if (!Yii::$app->user->isGuest): ?>
                             <a href="<?= \yii\helpers\Url::to(['site/logout']) ?>" data-method="post" class="dropdown-item">Logout</a>
 
@@ -123,25 +121,48 @@ RentalAsset::register($this);
         </div>
         <div class="col-md-4 col-lg-6 text-center">
             <div class="position-relative ps-4">
-                <div class="d-flex border rounded-pill">
-                    <input class="form-control border-0 rounded-pill w-100 py-3" type="text"
-                           data-bs-target="#dropdownToggle123" placeholder="Search Looking For?">
-                    <select class="form-select text-dark border-0 border-start rounded-0 p-3" style="width: 200px;">
-                        <option value="All Category">All Category</option>
-                        <option value="Pest Control-2">Category 1</option>
-                        <option value="Pest Control-3">Category 2</option>
-                        <option value="Pest Control-4">Category 3</option>
-                        <option value="Pest Control-5">Category 4</option>
-                    </select>
-                    <button type="button" class="btn btn-primary rounded-pill py-3 px-5" style="border: 0;"><i
-                                class="fas fa-search"></i></button>
+                <div class="search-wrapper">
+
+                    <?php $form = \yii\bootstrap5\ActiveForm::begin([
+                            'method' => 'get',
+                            'action' => ['equipment/index'],
+                            'options' => ['class' => 'd-flex w-100']
+                    ]) ?>
+
+                    <?= $form->field($searchModel, 'name', [
+                            'template' => '{input}',
+                    ])->textInput([
+                            'placeholder' => 'Search Looking For?',
+                            'class' => 'form-control border-0 shadow-none px-4',
+                    ])->label(false) ?>
+
+                    <?= $form->field($searchModel, 'category', [
+                            'template' => '{input}',
+                    ])->dropDownList(
+                            [
+                                    '' => 'All Category',
+                                    1 => 'Category 1',
+                                    2 => 'Category 2',
+                                    3 => 'Category 3',
+                            ],
+                            [
+                                    'class' => 'form-select border-0 border-start shadow-none px-3',
+                            ]
+                    )->label(false) ?>
+
+                    <?= \yii\helpers\Html::submitButton(
+                            '<i class="fas fa-search"></i>',
+                            ['class' => 'search-btn']
+                    ) ?>
+
+                    <?php \yii\bootstrap5\ActiveForm::end(); ?>
+
                 </div>
             </div>
         </div>
         <div class="col-md-4 col-lg-3 text-center text-lg-end">
             <div class="d-inline-flex align-items-center">
-                <a href="#" class="text-muted d-flex align-items-center justify-content-center me-3"><span
-                        class="rounded-circle btn-md-square border"><i class="fas fa-random"></i></i></a>
+
                 <a href="<?= \yii\helpers\Url::to(['shop/favorite']) ?>" class="text-muted d-flex align-items-center justify-content-center me-3"><span
                             class="rounded-circle btn-md-square border"><i class="fas fa-heart"></i></a>
                 <?php if (Yii::$app->user->isGuest): ?>
@@ -175,7 +196,7 @@ RentalAsset::register($this);
                             <?php foreach ($category_counts as $category): ?>
                             <li>
                                 <div class="categories-bars-item">
-                                    <a href="#"><?= $category['name'] ?></a>
+                                    <a href="<?= \yii\helpers\Url::to(['equipment/category-index', 'id' => $category['id']]) ?>"><?= $category['name'] ?></a>
 
                                     <span>(<?= $category['child_count'] ?>)</span>
 
@@ -282,11 +303,12 @@ RentalAsset::register($this);
                 <div class="rounded p-4">
                     <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4"
                          style="width: 70px; height: 70px;">
-                        <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+                        <i class="fas fa-shopping-bag fa-2x text-primary"></i>
                     </div>
                     <div>
-                        <h4 class="text-white">Address</h4>
-                        <p class="mb-2">123 Street New York.USA</p>
+                        <h4 class="text-white">Site Name</h4>
+                        <p class="mb-2"><?= $siteSetting->site_name?></p>
+
                     </div>
                 </div>
             </div>
@@ -298,7 +320,7 @@ RentalAsset::register($this);
                     </div>
                     <div>
                         <h4 class="text-white">Mail Us</h4>
-                        <p class="mb-2">info@example.com</p>
+                        <p class="mb-2"><?= $siteSetting->email ?></p>
                     </div>
                 </div>
             </div>
@@ -310,7 +332,7 @@ RentalAsset::register($this);
                     </div>
                     <div>
                         <h4 class="text-white">Telephone</h4>
-                        <p class="mb-2">(+012) 3456 7890</p>
+                        <p class="mb-2"><?= $siteSetting->phone_number ?></p>
                     </div>
                 </div>
             </div>
@@ -321,8 +343,8 @@ RentalAsset::register($this);
                         <i class="fab fa-firefox-browser fa-2x text-primary"></i>
                     </div>
                     <div>
-                        <h4 class="text-white">Yoursite@ex.com</h4>
-                        <p class="mb-2">(+012) 3456 7890</p>
+                        <h4 class="text-white"><?= $siteSetting->email ?></h4>
+                        <p class="mb-2"><?= $siteSetting->phone_number ?></p>
                     </div>
                 </div>
             </div>
@@ -331,9 +353,8 @@ RentalAsset::register($this);
             <div class="col-md-6 col-lg-6 col-xl-3">
                 <div class="footer-item d-flex flex-column">
                     <div class="footer-item">
-                        <h4 class="text-primary mb-4">Newsletter</h4>
-                        <p class="mb-3">Dolor amet sit justo amet elitr clita ipsum elitr est.Lorem ipsum dolor sit
-                            amet, consectetur adipiscing elit consectetur adipiscing elit.</p>
+                        <h4 class="text-primary mb-4">Site Description</h4>
+                        <p class="mb-3"><?= $siteSetting->description ?></p>
                         <div class="position-relative mx-auto rounded-pill">
                             <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text"
                                    placeholder="Enter your email">
@@ -346,37 +367,28 @@ RentalAsset::register($this);
             <div class="col-md-6 col-lg-6 col-xl-3">
                 <div class="footer-item d-flex flex-column">
                     <h4 class="text-primary mb-4">Customer Service</h4>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Contact Us</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Returns</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Order History</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Site Map</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Testimonials</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> My Account</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Unsubscribe Notification</a>
+                    <a href="<?= \yii\helpers\Url::to(['site/contact']) ?>" class=""><i class="fas fa-angle-right me-2"></i> Contact Us</a>
+
+                    <a href="<?= \yii\helpers\Url::to(['site/profile']) ?>" class=""><i class="fas fa-angle-right me-2"></i> My Account</a>
+                    <a href="<?= \yii\helpers\Url::to(['site/login']) ?>" class=""><i class="fas fa-angle-right me-2"></i> Unsubscribe Notification</a>
                 </div>
             </div>
             <div class="col-md-6 col-lg-6 col-xl-3">
                 <div class="footer-item d-flex flex-column">
                     <h4 class="text-primary mb-4">Information</h4>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> About Us</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Delivery infomation</a>
+                    <a href="<?= \yii\helpers\Url::to(['site/about']) ?>" class=""><i class="fas fa-angle-right me-2"></i> About Us</a>
                     <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Privacy Policy</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Terms & Conditions</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Warranty</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> FAQ</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Seller Login</a>
+                    <a href="<?= \yii\helpers\Url::to(['site/send-information']) ?>" class=""><i class="fas fa-angle-right me-2"></i> Terms & Conditions</a>
+
                 </div>
             </div>
             <div class="col-md-6 col-lg-6 col-xl-3">
                 <div class="footer-item d-flex flex-column">
                     <h4 class="text-primary mb-4">Extras</h4>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Brands</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Gift Vouchers</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Affiliates</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Wishlist</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Order History</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Track Your Order</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Track Your Order</a>
+                    <a href="<?= \yii\helpers\Url::to(['equipment/index']) ?>" class=""><i class="fas fa-angle-right me-2"></i> Equipments</a>
+                    <a href="<?= \yii\helpers\Url::to(['category/index']) ?>" class=""><i class="fas fa-angle-right me-2"></i>Categories</a>
+                    <a href="<?= \yii\helpers\Url::to(['equipment/create']) ?>" class=""><i class="fas fa-angle-right me-2"></i>Create Your Product</a>
+
                 </div>
             </div>
         </div>
@@ -417,6 +429,36 @@ RentalAsset::register($this);
 </body>
 </html>
 <?php $this->endPage();
+
+?>
+
+<?php $this->registerCss(
+
+        '.search-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #dee2e6;
+    border-radius: 50px;
+    overflow: hidden;   /* ENG MUHIM */
+    background: #fff;
+}
+
+.search-wrapper .form-control,
+.search-wrapper .form-select {
+    height: 60px;
+}
+
+.search-btn {
+    background: #ff8c00;
+    color: #fff;
+    border: none;
+    padding: 0 30px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}'
+);
 
 ?>
 

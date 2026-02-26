@@ -61,63 +61,24 @@ $this->params['breadcrumbs'][] = $this->title;
                     <output id="amount" name="amount" min-velue="0" max-value="500" for="rangeInput">0</output>
                     <div class=""></div>
                 </div>
-                <div class="product-color mb-3">
-                    <h4>Select By Color</h4>
-                    <ul class="list-unstyled">
-                        <li>
-                            <div class="product-color-item">
-                                <a href="#" class="text-dark"><i class="fas fa-apple-alt text-secondary me-2"></i>
-                                    Gold</a>
-                                <span>(1)</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="product-color-item">
-                                <a href="#" class="text-dark"><i class="fas fa-apple-alt text-secondary me-2"></i>
-                                    Green</a>
-                                <span>(1)</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="product-color-item">
-                                <a href="#" class="text-dark"><i class="fas fa-apple-alt text-secondary me-2"></i>
-                                    White</a>
-                                <span>(1)</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="additional-product mb-4">
-                    <h4>Additional Products</h4>
-                    <div class="additional-product-item">
-                        <input type="radio" class="me-2" id="Categories-1" name="Categories-1" value="Beverages">
-                        <label for="Categories-1" class="text-dark"> Accessories</label>
-                    </div>
-                    <div class="additional-product-item">
-                        <input type="radio" class="me-2" id="Categories-2" name="Categories-1" value="Beverages">
-                        <label for="Categories-2" class="text-dark"> Electronics &amp; Computer</label>
-                    </div>
-                    <div class="additional-product-item">
-                        <input type="radio" class="me-2" id="Categories-3" name="Categories-1" value="Beverages">
-                        <label for="Categories-3" class="text-dark"> Laptops &amp; Desktops</label>
-                    </div>
-                    <div class="additional-product-item">
-                        <input type="radio" class="me-2" id="Categories-4" name="Categories-1" value="Beverages">
-                        <label for="Categories-4" class="text-dark"> Mobiles &amp; Tablets</label>
-                    </div>
-                    <div class="additional-product-item">
-                        <input type="radio" class="me-2" id="Categories-5" name="Categories-1" value="Beverages">
-                        <label for="Categories-5" class="text-dark"> SmartPhone &amp; Smart TV</label>
-                    </div>
-                </div>
+
                 <div class="featured-product mb-4">
-                    <h4 class="mb-3">Featured products</h4>
+                    <h4 class="mb-3">Other Categories</h4>
+                    <?php foreach ($categories as $category): ?>
+                    <?php foreach ($category->equipments as $equipment): ?>
                     <div class="featured-product-item">
                         <div class="rounded me-4" style="width: 100px; height: 100px;">
-                            <img src="img/product-3.png" class="img-fluid rounded" alt="Image">
+                            <a href="<?= Url::to(['shop/detail', 'id' => $equipment->id]) ?>">
+
+                            <img src="/<?= $equipment->img ?>" class="img-fluid rounded" alt="Image">
+                            </a>
                         </div>
                         <div>
-                            <h6 class="mb-2">SmartPhone</h6>
+                            <h6 class="mb-2">
+                                <a href="<?= Url::to(['shop/detail', 'id' => $equipment->id]) ?>">
+                                    <?= $equipment->name ?>
+                                </a>
+                                </h6>
                             <div class="d-flex mb-2">
                                 <i class="fa fa-star text-secondary"></i>
                                 <i class="fa fa-star text-secondary"></i>
@@ -126,93 +87,43 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <i class="fa fa-star"></i>
                             </div>
                             <div class="d-flex mb-2">
-                                <h5 class="fw-bold me-2">2.99 $</h5>
-                                <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
+
+                                <h5 class="fw-bold me-2"><?= $equipment->daily_price ?></h5>
+
                             </div>
                         </div>
                     </div>
-                    <div class="featured-product-item">
-                        <div class="rounded me-4" style="width: 100px; height: 100px;">
-                            <img src="img/product-4.png" class="img-fluid rounded" alt="Image">
-                        </div>
-                        <div>
-                            <h6 class="mb-2">Smart Camera</h6>
-                            <div class="d-flex mb-2">
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <h5 class="fw-bold me-2">2.99 $</h5>
-                                <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="featured-product-item">
-                        <div class="rounded me-4" style="width: 100px; height: 100px;">
-                            <img src="img/product-5.png" class="img-fluid rounded" alt="Image">
-                        </div>
-                        <div>
-                            <h6 class="mb-2">Camera Leance</h6>
-                            <div class="d-flex mb-2">
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <h5 class="fw-bold me-2">2.99 $</h5>
-                                <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                            </div>
-                        </div>
-                    </div>
+                    <?php endforeach; ?>
+                    <?php endforeach; ?>
+
                     <div class="d-flex justify-content-center my-4">
                         <a href="#" class="btn btn-primary px-4 py-3 rounded-pill w-100">Vew More</a>
                     </div>
                 </div>
-                <a href="#">
-                </a><div class="position-relative"><a href="#">
-                        <img src="img/product-banner-2.jpg" class="img-fluid w-100 rounded" alt="Image">
-                    </a><div class="text-center position-absolute d-flex flex-column align-items-center justify-content-center rounded p-4" style="width: 100%; height: 100%; top: 0; right: 0; background: rgba(242, 139, 0, 0.3);"><a href="#">
-                            <h5 class="display-6 text-primary">SALE</h5>
-                            <h4 class="text-secondary">Get UP To 50% Off</h4>
-                        </a><a href="#" class="btn btn-primary rounded-pill px-4">Shop Now</a>
-                    </div>
-                </div>
 
-                <div class="product-tags py-4">
-                    <h4 class="mb-3">PRODUCT TAGS</h4>
-                    <div class="product-tags-items bg-light rounded p-3">
-                        <a href="#" class="border rounded py-1 px-2 mb-2">New</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">brand</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">black</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">white</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">tablats</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">phone</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">camera</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">drone</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">talevision</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">slaes</a>
-                    </div>
-                </div>
             </div>
-            <div class="col-lg-9 wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
-                <div class="rounded mb-4 position-relative">
-                    <img src="img/product-banner-3.jpg" class="img-fluid rounded w-100" style="height: 250px;" alt="Image">
-                    <div class="position-absolute rounded d-flex flex-column align-items-center justify-content-center text-center" style="width: 100%; height: 250px; top: 0; left: 0; background: rgba(242, 139, 0, 0.3);">
-                        <h4 class="display-5 text-primary">SALE</h4>
-                        <h3 class="display-4 text-white mb-4">Get UP To 50% Off</h3>
-                        <a href="#" class="btn btn-primary rounded-pill">Shop Now</a>
-                    </div>
-                </div>
+
+
+
+            <div class="col-lg-9 wow fadeInUp my-4" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
+
                 <div class="row g-4">
                     <div class="col-xl-7">
                         <div class="input-group w-100 mx-auto d-flex">
-                            <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                            <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                            <?php $form = \yii\bootstrap5\ActiveForm::begin([
+                                    'method' => 'post',
+                                'action' => ['equipment/index'],
+                                    'options' => ['class' => 'd-flex w-100']
+                            ]) ?>
+
+                            <?= $form->field($searchModel, 'name', ['template' => "{input}", 'options' => ['tag' => false]])->textInput(['class' => 'form-control p-3', 'placeholder' => 'keywords'])->label(false) ?>
+
+                            <?= Html::submitButton('<i class="fa fa-search"></i>', ['class' => 'btn btn-primary', 'style' => 'margin-left: 10px']) ?>
+
+                           <?php \yii\bootstrap5\ActiveForm::end() ?>
+
+<!--                            <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">-->
+<!--                            <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>-->
                         </div>
                     </div>
                     <div class="col-xl-3 text-end">
@@ -229,22 +140,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-xl-2">
-                        <ul class="nav nav-pills d-inline-flex text-center py-2 px-2 rounded bg-light mb-4">
-                            <li class="nav-item me-4">
-                                <a class="bg-light" data-bs-toggle="pill" href="#tab-5">
-                                    <i class="fas fa-th fa-3x text-primary"></i>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="bg-light" data-bs-toggle="pill" href="#tab-6">
-                                    <i class="fas fa-bars fa-3x text-primary"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+
                 </div>
-                <div class="tab-content">
+                <div class="tab-content mt-4">
 
 
 

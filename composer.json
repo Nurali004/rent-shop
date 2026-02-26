@@ -17,10 +17,11 @@
         "php": ">=7.4.0",
         "yiisoft/yii2": "~2.0.45",
         "yiisoft/yii2-bootstrap5": "~2.0.2",
-        "yiisoft/yii2-symfonymailer": "~2.0.3",
+        "yiisoft/yii2-symfonymailer": "^4.0",
         "mdmsoft/yii2-admin": "~2.0",
       "tinymce/tinymce": "7.6.1",
-        "2amigos/yii2-tinymce-widget": "~1.1"
+        "2amigos/yii2-tinymce-widget": "~1.1",
+        "yiisoft/yii2-authclient": "^2.2"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

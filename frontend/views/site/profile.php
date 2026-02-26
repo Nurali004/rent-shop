@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][] = strip_tags($this->title);
 \yii\web\YiiAsset::register($this);
 ?>
 
-<div class="container py-5">
+<div class="container my-3">
     <div class="row">
 
         <div class="d-flex">
@@ -20,6 +20,19 @@ $this->params['breadcrumbs'][] = strip_tags($this->title);
             <?= $this->render('update-customer-image', ['customer' => $customer])  ?>
 
             <?php Pjax::end();  ?>
+
+        </div>
+
+        <div class="d-flex justify-content-end mb-3">
+            <?php $form = ActiveForm::begin([
+                    'method' => 'post',
+                    'action' => ['site/logout'],
+
+])
+?>
+            <?= Html::submitButton('Logout', ['class' => 'btn btn-danger']) ?>
+
+            <?php ActiveForm::end(); ?>
 
         </div>
 

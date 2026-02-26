@@ -21,7 +21,7 @@ use yii\helpers\Url;
                         <?php foreach ($category_counts as $category): ?>
                             <li>
                                 <div class="categories-item">
-                                    <a href="#" class="text-dark"><i class="fas fa-apple-alt text-secondary me-2"></i>
+                                    <a href="<?= Url::to(['equipment/category-index', 'id'=> $category['id']]) ?>" class="text-dark"><i class="fas fa-apple-alt text-secondary me-2"></i>
                                         <?= $category['name'] ?></a>
                                     <span>(<?= $category['children_count'] ?>)</span>
                                 </div>
@@ -30,21 +30,7 @@ use yii\helpers\Url;
 
                     </ul>
                 </div>
-                <div class="additional-product mb-4">
-                    <h4>Select By Color</h4>
-                    <div class="additional-product-item">
-                        <input type="radio" class="me-2" id="Categories-1" name="Categories-1" value="Beverages">
-                        <label for="Categories-1" class="text-dark"> Gold</label>
-                    </div>
-                    <div class="additional-product-item">
-                        <input type="radio" class="me-2" id="Categories-2" name="Categories-1" value="Beverages">
-                        <label for="Categories-2" class="text-dark"> Green</label>
-                    </div>
-                    <div class="additional-product-item">
-                        <input type="radio" class="me-2" id="Categories-3" name="Categories-1" value="Beverages">
-                        <label for="Categories-3" class="text-dark"> White</label>
-                    </div>
-                </div>
+
                 <div class="featured-product mb-4">
                     <h4 class="mb-3">Featured products</h4>
                     <?php foreach ($categories as $category): ?>
@@ -80,33 +66,9 @@ use yii\helpers\Url;
                 </div>
                 <a href="#">
                 </a>
-                <div class="position-relative"><a href="#">
-                        <img src="img/product-banner-2.jpg" class="img-fluid w-100 rounded" alt="Image">
-                    </a>
-                    <div class="text-center position-absolute d-flex flex-column align-items-center justify-content-center rounded p-4"
-                         style="width: 100%; height: 100%; top: 0; right: 0; background: rgba(242, 139, 0, 0.3);"><a
-                                href="#">
-                            <h5 class="display-6 text-primary">SALE</h5>
-                            <h4 class="text-secondary">Get UP To 50% Off</h4>
-                        </a><a href="#" class="btn btn-primary rounded-pill px-4">Shop Now</a>
-                    </div>
-                </div>
 
-                <div class="product-tags my-4">
-                    <h4 class="mb-3">PRODUCT TAGS</h4>
-                    <div class="product-tags-items bg-light rounded p-3">
-                        <a href="#" class="border rounded py-1 px-2 mb-2">New</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">brand</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">black</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">white</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">tablats</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">phone</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">camera</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">drone</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">talevision</a>
-                        <a href="#" class="border rounded py-1 px-2 mb-2">slaes</a>
-                    </div>
-                </div>
+
+
             </div>
             <div class="col-lg-7 col-xl-9 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="row g-4 single-product">

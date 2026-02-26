@@ -35,9 +35,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
+                        <div class="form-group">
+
                         <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+                        </div>
+
+                        <div class="form-group">
 
                         <?= $form->field($model, 'password')->passwordInput() ?>
+                        </div>
+
+
 
                         <?= $form->field($model, 'rememberMe')->checkbox() ?>
 
@@ -52,6 +60,21 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
 
                         <?php ActiveForm::end(); ?>
+
+
+                        <div class="row mt-3">
+
+                                <a href="<?= \yii\helpers\Url::to(['site/auth', 'authclient' => 'google']) ?>"
+                                   class="btn btn-primary">
+                                    Google orqali kirish
+                                </a>
+
+
+                        </div>
+
+
+
+
                     </div>
                 </div>
 
@@ -59,3 +82,4 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+

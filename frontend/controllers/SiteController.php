@@ -5,13 +5,16 @@ namespace frontend\controllers;
 use backend\controllers\SpecialOfferController;
 use common\models\Category;
 use common\models\Customer;
+use common\models\EmailVerification;
 use common\models\Equipment;
 use common\models\Slider;
 use common\models\SpecialOffer;
 use common\models\User;
+use common\models\VerifyForm;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
+use yii\authclient\AuthAction;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
@@ -37,17 +40,18 @@ class SiteController extends Controller
     public function behaviors()
     {
         return [
+
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'signup', 'profile', 'update-user', 'update-profile', 'update-customer-image'],
+                'only' => ['logout', 'signup', 'profile', 'update-user', 'update-profile', 'update-customer-image', 'verify'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
+                        'actions' => ['signup', 'verify'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout', 'profile', 'update-user', 'update-profile', 'update-customer-image'],
+                        'actions' => ['logout', 'profile', 'verify', 'update-user', 'update-profile', 'update-customer-image'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -68,6 +72,11 @@ class SiteController extends Controller
     public function actions()
     {
         return [
+            'auth' => [
+                'class' => AuthAction::class,
+                'successCallback' => [$this, 'onAuthSuccess'],
+
+            ],
             'error' => [
                 'class' => \yii\web\ErrorAction::class,
             ],
@@ -175,15 +184,48 @@ class SiteController extends Controller
      */
     public function actionSignup()
     {
+
+
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-            return $this->goHome();
+        if ($model->load(Yii::$app->request->post()) && ($user = $model->signup())) {
+
+            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email code.');
+            return $this->redirect(['site/verify', 'id' => $user->id]);
         }
 
         return $this->render('signup', [
             'model' => $model,
         ]);
+    }
+
+
+    public function actionVerify($id)
+    {
+        $model = new VerifyForm();
+        $user = User::findOne($id);
+
+        if ($model->load(Yii::$app->request->post())) {
+            $verification = EmailVerification::find()->where(['user_id' => $user->id])->one();
+
+            if ($verification && $verification->email_code && $verification->email_expired_at >= time()) {
+                $verification->email_verified = 1;
+                $verification->save(false);
+
+
+                Yii::$app->session->setFlash('success', 'Your email address has been verified.');
+                return $this->redirect(['site/login']);
+            }
+
+            $model->addError('email_code', 'Wrong code.');
+
+
+        }
+
+        return $this->render('verify', [
+            'model' => $model,
+        ]);
+
+
     }
 
     /**
@@ -287,6 +329,9 @@ class SiteController extends Controller
         }
 
         $customer = Customer::findOne(['user_id' => $user->id]);
+        if (!$customer) {
+            $customer = new Customer();
+        }
 
 
         return $this->render('profile', ['user' => $user, 'customer' => $customer]);
@@ -320,19 +365,28 @@ class SiteController extends Controller
         if (Yii::$app->request->isPost) {
 
             $customer = Customer::findOne(['user_id' => Yii::$app->user->identity->id]);
+            if (!$customer) {
+                $customer = new Customer();
+                $customer->user_id = Yii::$app->user->identity->id;
+                $customer->phone = Yii::$app->request->post('Customer')['phone'];
+                $customer->address = Yii::$app->request->post('Customer')['address'];
+                $customer->passport = Yii::$app->request->post('Customer')['passport'];
+                $customer->first_name = Yii::$app->request->post('Customer')['first_name'];
+                $customer->last_name = Yii::$app->request->post('Customer')['last_name'];
+                Yii::$app->session->setFlash('success', 'Your profile information has been saved.');
+
+                $customer->save();
+            }
             $customer->first_name = Yii::$app->request->post('Customer')['first_name'];
             $customer->last_name = Yii::$app->request->post('Customer')['last_name'];
             $customer->phone = Yii::$app->request->post('Customer')['phone'];
             $customer->address = Yii::$app->request->post('Customer')['address'];
             $customer->user_id = Yii::$app->user->identity->id;
             $customer->passport = Yii::$app->request->post('Customer')['passport'];
-            if (!is_null($customer->img)) {
 
-                Yii::$app->session->setFlash('success', 'Customer has been updated.');
+            Yii::$app->session->setFlash('success', 'Customer has been updated.');
 
-                $customer->save();
-            }
-
+            $customer->save();
 
 
         }
@@ -349,13 +403,13 @@ class SiteController extends Controller
         if (Yii::$app->request->isPost) {
             $imageFile = UploadedFile::getInstance($customer, 'imageFile');
             if ($imageFile) {
-                $fileName = 'uploads/customer/'  . $imageFile->baseName . time(). '.' . $imageFile->extension;
-                $fileNamePath = Yii::getAlias('@frontend'). '/web/' . $fileName;
+                $fileName = 'uploads/customer/' . $imageFile->baseName . time() . '.' . $imageFile->extension;
+                $fileNamePath = Yii::getAlias('@frontend') . '/web/' . $fileName;
                 $imageFile->saveAs($fileNamePath);
                 $customer->img = $fileName;
                 if ($customer->updateAttributes(['img' => $fileName])) {
 
-                Yii::$app->session->setFlash('customer-img', 'Customer image has been updated.');
+                    Yii::$app->session->setFlash('customer-img', 'Customer image has been updated.');
                 }
             }
 
@@ -366,6 +420,31 @@ class SiteController extends Controller
         return $this->renderAjax('update-customer-image', ['customer' => $customer]);
 
 
+    }
+
+
+    public function OnAuthSuccess($client)
+    {
+        $attributes = $client->getUserAttributes();
+        $email = $attributes['email'];
+        $name = $attributes['name'];
+
+        $user = User::findOne(['email' => $email]);
+        if (!$user) {
+            $user = new User();
+            $user->email = $email;
+            $user->username = $name;
+            $user->status = User::STATUS_ACTIVE;
+            $user->generateAuthKey();
+            $user->generatePasswordResetToken();
+            $user->password_hash = Yii::$app->getSecurity()->generatePasswordHash(Yii::$app->getSecurity()->generateRandomString(10));
+            $user->save(false);
+
+        }
+
+        Yii::$app->user->login($user);
+
+        return $this->goHome();
 
     }
 
