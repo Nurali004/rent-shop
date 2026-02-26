@@ -17,8 +17,8 @@ return [
             'clients' => [
                 'google' => [
                     'class' => 'yii\authclient\clients\Google',
-                    'clientId' => '511165293736-g36lks4r55lvqrihfmfeqg9807tn6c84.apps.googleusercontent.com',
-                    'clientSecret' => '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',
+                    'clientId' => getenv('GOOGLE_CLIENT_ID'),
+                    'clientSecret' => getenv('GOOGLE_CLIENT_SECRET'),
                 ],
             ],
         ],
